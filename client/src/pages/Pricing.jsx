@@ -1,11 +1,17 @@
 import React, { useState } from "react";
+import axios from "axios";
 import Icon from "../components/Icons.jsx";
 import { motion } from "motion/react";
 import { useNavigate } from "react-router-dom";
+import { ServerUrl } from "../App.jsx";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../redux/userSlice.js";
 
 function Pricing() {
   const navigate = useNavigate();
   const [selectedPlan, selectPlan] = useState("free");
+  const [loadingPlan, setLoadingPlan] = useState(null);
+  const dispatch = useDispatch();
   const plans = [
     {
       id: "free",
@@ -49,6 +55,58 @@ function Pricing() {
       badge: "Best Value",
     },
   ];
+  const handlePayment = async (plan) => {
+    try {
+      if (plan.id === "free" || plan.price === "₹0") {
+        alert("You are already on Free plan.");
+        return;
+      }
+      setLoadingPlan(plan.id);
+      const amount = plan.id === "basic" ? 100 : plan.id === "pro" ? 500 : 0;
+      const result = await axios.post(
+        ServerUrl + "/api/payment/order",
+        {
+          planId: plan.id,
+          amount,
+          credits: plan.credits,
+        },
+        { withCredentials: true },
+      );
+      console.log(result.data);
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        amount: result.data.amount,
+        currency: "INR",
+        name: "InterviewAi",
+        description: `${plan.name} - ${plan.credits} Credits`,
+        order_id: result.data.id,
+        handler: async function (response) {
+          console.log(response);
+          const verification = await axios.post(
+            ServerUrl + "/api/payment/verify",
+            {
+              //confusion on whether to use generalised case and expose razorpay-casing or pass directly
+              razorpayOrderId: response.razorpay_order_id,
+              razorpayPaymentId: response.razorpay_payment_id,
+              razorpaySignature: response.razorpay_signature,
+            },
+            { withCredentials: true },
+          );
+          dispatch(setUserData(verification.data.user));
+          alert("Payment successful. Credits added!");
+          navigate("/");
+        },
+        theme: { color: "#10b981" },
+      };
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+      setLoadingPlan(null);
+    } catch (error) {
+      console.error("Payment error.");
+      setLoadingPlan(null);
+    }
+  };
+
   return (
     <div className="bg-gradient-to-br min-h-screen from-gray-50 to-emerald-100 py-16 px-6">
       <div className="max-w-6xl mx-auto mb-14 flex items-start gap-4">
@@ -114,6 +172,12 @@ function Pricing() {
               {/**making pricing page buy button at10:33*/}
               {!p.default && (
                 <button
+                  disabled={loadingPlan === p.id}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (!isSelected) selectPlan(p.id);
+                    else handlePayment(p);
+                  }}
                   className={`w-full mt-8 py-3 rounded-xl font-semibold transition
                     ${
                       isSelected
@@ -121,7 +185,11 @@ function Pricing() {
                         : "bg-gray-200 text-gray-700 hover:bg-emerald-100"
                     }`}
                 >
-                  {isSelected ? "Proceed to Pay" : "Select Plan"}
+                  {loadingPlan === p.id
+                    ? "Processing..."
+                    : isSelected
+                      ? "Proceed to Pay"
+                      : "Select Plan"}
                 </button>
               )}
             </motion.div>
