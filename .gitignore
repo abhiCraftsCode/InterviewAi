@@ -5,6 +5,7 @@
 **/.angular/
 **/.next/
 **/.cache/
+server/public/*
 
 # Environment Variables & Secrets (Keep your DB passwords safe)
 **/.env

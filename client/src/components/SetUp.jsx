@@ -39,13 +39,27 @@ function SetUp({ onStart }) {
       setSkills(res.data.skills || []);
       setResumeText(res.data.resumeText || "");
       setAnalysisDone(true);
-      setAnalysing(false);
+      //  setAnalysing(false);
     } catch (error) {
       console.error(error);
+      alert(error.res?.data?.message || "Retry uploading resume.");
+    } finally {
       setAnalysing(false);
     }
   };
   const handleStart = async () => {
+    if (!role.trim()) {
+      alert("Role field is required!");
+      return;
+    }
+    if (!experience.trim()) {
+      alert("Experience field is required!");
+      return;
+    }
+    if (!mode.trim()) {
+      alert("Interview mode field is required!");
+      return;
+    }
     setLoading(true);
     try {
       const result = await axios.post(
@@ -59,10 +73,15 @@ function SetUp({ onStart }) {
           setUserData({ ...userData, credits: result.data.creditsLeft }),
         );
       }
-      setLoading(false);
+      //setLoading(false);
       onStart(result.data);
     } catch (error) {
       console.error(error);
+      alert(
+        error.result?.data?.message ||
+          "Something went wrong at the backend. Please try again.",
+      );
+    } finally {
       setLoading(false);
     }
   };
@@ -147,7 +166,7 @@ function SetUp({ onStart }) {
               />
               <input
                 type="text"
-                placeholder="Enter role"
+                placeholder="Enter role*"
                 className="w-full pl-12 pr-4 py-3 border border-gray-200
               rounded-xl focus:ring-2 focus:ring-green-500 outline-none transition"
                 onChange={(e) => setRole(e.target.value)}
@@ -161,7 +180,7 @@ function SetUp({ onStart }) {
               />
               <input
                 type="text"
-                placeholder="Experience (e.g. 2 years)"
+                placeholder="Experience* (e.g. 2 years)"
                 className="w-full pl-12 pr-4 py-3 border border-gray-200
               rounded-xl focus:ring-2 focus:ring-green-500 outline-none transition"
                 onChange={(e) => setExperience(e.target.value)}
@@ -175,7 +194,7 @@ function SetUp({ onStart }) {
               focus:ring-1 focus:ring-green-500 outline-none transition"
             >
               <option value="" disabled>
-                Select Interview Mode
+                Select Interview Mode*
               </option>
               <option value="Technical">Technical Interview</option>
               <option value="HR">HR Interview</option>
@@ -260,7 +279,7 @@ function SetUp({ onStart }) {
             )}
 
             <motion.button
-              disabled={!role || !experience}
+              disabled={!role || !experience || !mode}
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.9 }}
               onClick={handleStart}

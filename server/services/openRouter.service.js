@@ -19,10 +19,6 @@ export const askAi = async ({ messages }) => {
         headers: {
           Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
           "Content-Type": "application/json",
-          /*
-          "X-Title": "Interview AI",
-          "HTTP-Referer": "http://localhost:5173",
-          */
         },
       },
     );

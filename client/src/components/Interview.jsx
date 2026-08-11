@@ -180,6 +180,10 @@ function Interview({ interviewData, onFinish }) {
   //submit answer to ai
   const submitAnswer = async () => {
     if (isSubmitting) return;
+    if (!answer.trim()) {
+      alert("Please enter an answer before submitting.");
+      return;
+    }
     stopMic();
     setSubmitting(true);
     try {
@@ -195,9 +199,15 @@ function Interview({ interviewData, onFinish }) {
       );
       setFeedback(result.data.feedback);
       speakText(result.data.feedback);
-      setSubmitting(false);
+      //setSubmitting(false);
     } catch (error) {
       console.error("failed submitting answer.");
+      alert(
+        error.result?.data?.message ||
+          "Something went wrong at the backend. Please try submitting again.",
+      );
+    } finally {
+      setSubmitting(false);
     }
   };
   //next question
@@ -228,6 +238,10 @@ function Interview({ interviewData, onFinish }) {
       onFinish(result.data);
     } catch (error) {
       console.error("error while ending interview.");
+      alert(
+        error.result?.data?.message ||
+          "Something went wrong at the backend. Please try again.",
+      );
     }
   };
   //minor edits/finishers
