@@ -19,6 +19,10 @@ app.use("/api/user", userRouter);
 app.use("/api/interview", interviewRouter);
 app.use("/api/payment", paymentRouter);
 
+app.get("/", (req, res) => {
+  res.status(200).json({ message: "InterviewAI Backend API is running!" });
+});
+
 app.listen(PORT, () => {
   console.log(`InterviewAI Server is running on port ${PORT}`);
   connectDb();
