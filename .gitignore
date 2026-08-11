@@ -6,6 +6,7 @@
 **/.next/
 **/.cache/
 server/public/*
+!server/public/.gitkeep
 
 # Environment Variables & Secrets (Keep your DB passwords safe)
 **/.env
