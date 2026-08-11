@@ -12,6 +12,7 @@ import InterviewHistory from "./pages/InterviewHistory.jsx";
 import Pricing from "./pages/Pricing.jsx";
 
 export const ServerUrl = import.meta.env.VITE_SERVER_URL;
+axios.defaults.withCredentials = true;
 
 function App() {
   const dispatch = useDispatch();
