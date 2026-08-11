@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Navbar from "../components/Navbar";
+import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
 import { useSelector } from "react-redux";
 import { animate, motion, scale } from "motion/react";

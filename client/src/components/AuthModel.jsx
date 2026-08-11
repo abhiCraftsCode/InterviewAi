@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import Auth from "../pages/Auth";
-import Icon from "./Icons";
+import Auth from "../pages/Auth.jsx";
+import Icon from "./Icons.jsx";
 
 function AuthModel({ onClose }) {
   const { userData } = useSelector((state) => state.user);

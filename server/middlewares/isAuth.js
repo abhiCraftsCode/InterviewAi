@@ -3,12 +3,12 @@ import jwt from "jsonwebtoken";
 const isAuth = async (req, res, next) => {
   try {
     console.log("authenticating...");
-    let { token } = req.cookies;
-    if (!token)
+    let { interviewAiToken } = req.cookies;
+    if (!interviewAiToken)
       return res
         .status(400)
         .json({ message: "Authentication token not found." });
-    const verifyToken = jwt.verify(token, process.env.JWT_SECRET);
+    const verifyToken = jwt.verify(interviewAiToken, process.env.JWT_SECRET);
     if (!verifyToken)
       return res
         .status(400)

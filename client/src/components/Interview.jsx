@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import maleVideo from "../assets/Videos/male-ai.mp4";
 import femaleVideo from "../assets/Videos/female-ai.mp4";
-import Timer from "./Timer";
-import Icon from "./Icons";
+import Timer from "./Timer.jsx";
+import Icon from "./Icons.jsx";
 import axios from "axios";
 import { ServerUrl } from "../App.jsx";
 

@@ -9,7 +9,7 @@ export const googleAuth = async (req, res) => {
       user = await User.create({ name, email });
     }
     let token = await genToken(user._id);
-    res.cookie("token", token, {
+    res.cookie("interviewAiToken", token, {
       http: true,
       secure: false,
       sameSite: "strict",
@@ -23,7 +23,7 @@ export const googleAuth = async (req, res) => {
 
 export const logOut = async (req, res) => {
   try {
-    await res.clearCookie("token");
+    await res.clearCookie("interviewAiToken");
     return res.status(200).json({ message: "Logout successfully." });
   } catch (error) {
     return res.status(500).json({ message: `Logout failed : ${error}` });
